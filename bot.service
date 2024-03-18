@@ -1,0 +1,12 @@
+[Unit]
+Description=Trading Bot
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1s
+WorkingDirectory=/home/ubuntu/rsifxbot/_work/rsifxbot/rsifxbot/
+ExecStart=/home/ubuntu/rsifxbot/_work/rsifxbot/rsifxbot/main
+
+[Install]
+WantedBy=multi-user.target

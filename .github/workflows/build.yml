@@ -1,0 +1,41 @@
+name: Production
+on: [push]
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19.3"
+      - name: Build Binarys
+        run: |
+          go mod tidy
+          go build main.go
+
+      - name: Upload bot binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: release
+          path: /home/runner/work/rsifxbot/rsifxbot/main
+  Bot:
+    needs: Build
+    runs-on: [self-hosted, bot]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download bot binary
+        uses: actions/download-artifact@v3
+        with:
+          name: release
+      - name: Updating
+        run: |
+          sudo chmod a+rwx main
+          sudo service bot restart
+          sudo service bot status
+  Clean:
+    needs: [Bot]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: geekyeggo/delete-artifact@v2
+        with:
+          name: release
